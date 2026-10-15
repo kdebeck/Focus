@@ -104,7 +104,9 @@ body{min-height:100vh;padding-bottom:96px}.wrap{max-width:760px;margin:0 auto;pa
 </div></div>
 
 <script>
-const LS='weeklyReset_v1';
+const LS='focusPlanner_v6';
+const LS_BACKUP='focusPlanner_v6_backup';
+const LS_LEGACY='weeklyReset_v1';
 const DOW=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 const focusIdeas=[
   'Make the week easier, not perfect.',
@@ -130,8 +132,42 @@ const dailyIdeas=[
   'Leave one nonessential thing undone on purpose.'
 ];
 let state=load(); let weekOffset=0; let focusIdeaIndex=0;
-function load(){try{return JSON.parse(localStorage.getItem(LS))||{weeks:{},habits:[],habitChecks:{},notes:''}}catch(e){return{weeks:{},habits:[],habitChecks:{},notes:''}}}
-function save(){localStorage.setItem(LS,JSON.stringify(state))}
+function blankState(){return {weeks:{},habits:[],habitChecks:{},notes:''}}
+function normalizeState(x){
+  const out=(x&&typeof x==='object')?x:blankState();
+  if(!out.weeks||typeof out.weeks!=='object')out.weeks={};
+  if(!Array.isArray(out.habits))out.habits=[];
+  if(!out.habitChecks||typeof out.habitChecks!=='object')out.habitChecks={};
+  if(typeof out.notes!=='string')out.notes='';
+  Object.values(out.weeks).forEach(w=>{
+    if(!w||typeof w!=='object')return;
+    if(typeof w.focus!=='string')w.focus='';
+    if(!Array.isArray(w.priorities))w.priorities=[];
+    if(!w.days||typeof w.days!=='object')w.days={};
+    if(!w.suggestions||typeof w.suggestions!=='object')w.suggestions={};
+  });
+  return out;
+}
+function safeParse(raw){try{return raw?JSON.parse(raw):null}catch(e){return null}}
+function load(){
+  const primary=safeParse(localStorage.getItem(LS));
+  if(primary)return normalizeState(primary);
+  const backup=safeParse(localStorage.getItem(LS_BACKUP));
+  if(backup)return normalizeState(backup);
+  const legacy=safeParse(localStorage.getItem(LS_LEGACY));
+  return normalizeState(legacy||blankState());
+}
+function save(){
+  try{
+    const raw=JSON.stringify(state);
+    localStorage.setItem(LS,raw);
+    localStorage.setItem(LS_BACKUP,raw);
+    localStorage.setItem(LS_LEGACY,raw);
+  }catch(e){console.warn('Focus save failed',e)}
+}
+window.addEventListener('pagehide',()=>save());
+window.addEventListener('beforeunload',()=>save());
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')save()});
 function mondayOf(date){const d=new Date(date); d.setHours(12,0,0,0); const day=(d.getDay()+6)%7; d.setDate(d.getDate()-day); return d}
 function addDays(d,n){const x=new Date(d); x.setDate(x.getDate()+n); return x}
 function ymd(d){return d.toISOString().slice(0,10)}

@@ -15,7 +15,7 @@
   --forest:#496451;--moss:#a9b99f;
 }
 *{box-sizing:border-box} html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-body{min-height:100vh;padding-bottom:96px}.wrap{max-width:760px;margin:0 auto;padding:18px 16px 110px}
+body{min-height:100vh;padding-bottom:30px}.wrap{max-width:760px;margin:0 auto;padding:18px 16px 35px}
 .leafmark{color:var(--forest);font-size:.9em;margin-right:4px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}.brand{font-family:Georgia,serif;font-size:30px;font-weight:700;letter-spacing:-.5px}.weeknav{display:flex;align-items:center;gap:6px}.iconbtn,.pillbtn,.ghostbtn,.primarybtn{border:0;border-radius:14px;font:inherit;cursor:pointer}.iconbtn{width:38px;height:38px;background:var(--paper);box-shadow:var(--shadow);font-size:18px}.weeklabel{font-size:13px;color:var(--muted);text-align:center;min-width:96px}
 .card{background:linear-gradient(180deg,#fffdf9,#fbfaf5);border:1px solid rgba(110,120,110,.08);border-radius:22px;box-shadow:var(--shadow);padding:18px;margin-bottom:14px}.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--sage);font-weight:800;margin-bottom:8px}.focusInput{width:100%;font-family:Georgia,serif;font-size:28px;line-height:1.2;border:0;outline:0;background:transparent;color:var(--ink);resize:none;min-height:70px}.suggest{background:linear-gradient(135deg,var(--sage2),#edf3ea);padding:14px;border-radius:18px;margin-top:12px}.suggestTop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.suggestText{font-size:16px;line-height:1.35;font-weight:650}.small{font-size:12px;color:var(--muted)}.minirow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.pillbtn{padding:8px 11px;background:white;color:var(--ink);font-size:13px;border:1px solid var(--line)}.primarybtn{padding:10px 14px;background:var(--sage);color:white;font-weight:700}.ghostbtn{padding:9px 12px;background:#f3f0ea;color:var(--ink)}
 .sectionTitle{font-family:Georgia,serif;font-size:22px;margin:0 0 12px}.natureline{height:1px;background:linear-gradient(90deg,transparent,var(--moss),transparent);margin:8px 0 14px}.prioritySource{font-size:11px;color:var(--muted);margin-left:auto;white-space:nowrap}.priorityToggle{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);white-space:nowrap}.priorityToggle input{accent-color:var(--sage)}.priorityList,.taskList,.habitList{display:grid;gap:8px}.row{display:flex;align-items:center;gap:10px;padding:11px 12px;background:#faf8f4;border-radius:14px}.row input[type=text]{flex:1;border:0;background:transparent;font-size:15px;outline:0;color:var(--ink)}.check{width:22px;height:22px;border:1.5px solid #b4bdb4;border-radius:7px;display:grid;place-items:center;cursor:pointer;background:white;flex:0 0 auto}.check.done{background:var(--sage);border-color:var(--sage);color:white}.trash{border:0;background:transparent;color:#a38e89;font-size:17px}.addline{display:flex;gap:8px;margin-top:10px}.addline input{flex:1;border:1px solid var(--line);border-radius:14px;padding:11px 12px;background:white;font:inherit}.addline button{border:0;border-radius:14px;padding:0 14px;background:var(--sage);color:white;font-size:20px}
@@ -41,19 +41,29 @@ body{min-height:100vh;padding-bottom:96px}.wrap{max-width:760px;margin:0 auto;pa
     <div class="card">
       <div class="eyebrow">Focus of the week</div>
       <textarea id="focusInput" class="focusInput" placeholder="What matters most this week?"></textarea>
-      <div class="suggest">
-        <div class="suggestTop">
-          <div>
-            <div class="small">Suggested focus</div>
-            <div id="focusSuggestion" class="suggestText"></div>
-          </div>
-          <span class="tag">idea</span>
-        </div>
-        <div class="minirow">
-          <button class="pillbtn" id="useSuggestion">Use this</button>
-          <button class="pillbtn" id="newSuggestion">Another idea</button>
-        </div>
+
+    </div>
+
+
+    <div class="card">
+      <div class="eyebrow">Simple • realistic • doable</div>
+      <h2 class="sectionTitle">Daily essentials</h2><div class="natureline"></div>
+      <div id="essentials" class="taskList"></div>
+      <div class="addline"><input id="essentialInput" placeholder="Add a repeating daily task"><button id="addEssential" aria-label="Add daily essential">+</button></div>
+      <div class="suggest" style="margin-top:18px">
+        <div class="small">One small suggestion • optional</div>
+        <div id="todaySuggestion" class="suggestText" style="margin-top:5px"></div>
+        <div class="minirow"><button class="pillbtn" id="swapTodayIdea">Another idea</button></div>
       </div>
+    </div>
+    <div class="card">
+      <div class="eyebrow">Today's cleaning</div>
+      <h2 class="sectionTitle">Home Reset <span class="small" id="cleanDay"></span></h2><div class="natureline"></div>
+      <div class="hint" id="cleanFocus"></div><div id="cleanItems" class="taskList" style="margin-top:12px"></div>
+      <details style="margin-top:14px"><summary class="hint" style="cursor:pointer">Everyday cleaning basics</summary><div class="taskList" id="cleanBasics" style="margin-top:9px"></div></details>
+      <details style="margin-top:14px"><summary class="hint" style="cursor:pointer">Dog-hair quick routine</summary><div class="taskList" id="dogTasks" style="margin-top:9px"></div></details>
+      <details style="margin-top:14px"><summary class="hint" style="cursor:pointer">Survival mode • on busy days</summary><p class="hint">A simpler set of tasks for difficult days. No catch-up required.</p><div class="taskList" id="survivalTasks"></div></details>
+      <details style="margin-top:14px"><summary class="hint" style="cursor:pointer">Optional rotating extra</summary><p id="extraTask" class="hint"></p></details>
     </div>
 
     <div class="card">
@@ -67,41 +77,33 @@ body{min-height:100vh;padding-bottom:96px}.wrap{max-width:760px;margin:0 auto;pa
       <h2 class="sectionTitle">Your week</h2>
       <div id="weekOverview" class="overview"></div>
     </div>
-  </section>
-
-  <section id="habits" class="tab">
+  <div id="habits">
     <div class="card">
       <div class="habitHeader">
         <div>
           <div class="eyebrow">Habits</div>
-          <h2 class="sectionTitle" style="margin:0">Carry forward automatically</h2>
+          <h2 class="sectionTitle" style="margin:0">Repeats each week</h2>
         </div>
       </div>
       <div class="hint" style="margin-bottom:14px">Add or delete habits anytime. Any habit you keep carries into each new week automatically; the checkmarks start fresh for the new dates.</div>
       <div id="habitGrid" class="habitGrid"></div>
       <div class="addline"><input id="habitInput" placeholder="Add a habit"><button id="addHabit">+</button></div>
     </div>
-  </section>
+  </div>
 
-  <section id="days" class="tab">
-    <div id="daysContainer"></div>
-  </section>
+  <div id="days">
+    <div class="card"><h2 class="sectionTitle">Days • optional planning</h2><div class="hint">Everything stays on this page. Expand your days by scrolling.</div></div><div id="daysContainer"></div>
+  </div>
 
-  <section id="notes" class="tab">
+  <div id="notes">
     <div class="card notesCard">
       <div class="eyebrow">Notes</div>
       <h2 class="sectionTitle">Miscellaneous brain dump</h2>
       <textarea id="notesArea" class="textarea" placeholder="Anything you don't want floating around in your head..."></textarea>
     </div>
+  </div>
   </section>
 </div>
-
-<div class="bottomNav"><div class="navInner">
-  <button class="navbtn active" data-tab="home"><span>⌂</span>Home</button>
-  <button class="navbtn" data-tab="habits"><span>○</span>Habits</button>
-  <button class="navbtn" data-tab="days"><span>▦</span>Days</button>
-  <button class="navbtn" data-tab="notes"><span>✎</span>Notes</button>
-</div></div>
 
 <script>
 const LS='focusPlanner_v6';
@@ -198,7 +200,7 @@ function fmtWeek(){const s=weekStart(),e=addDays(s,6); const o={month:'short',da
 function getDaily(dateKey){const w=wk(); if(!w.days[dateKey])w.days[dateKey]=[]; return w.days[dateKey]}
 function suggestionFor(dateKey){const w=wk(); if(w.suggestions[dateKey]==null){let hash=[...dateKey].reduce((a,c)=>a+c.charCodeAt(0),0);w.suggestions[dateKey]=hash%dailyIdeas.length;save()}return dailyIdeas[w.suggestions[dateKey]]}
 function renderAll(){document.getElementById('weekLabel').textContent=fmtWeek();renderHome();renderHabits();renderDays();document.getElementById('notesArea').value=state.notes||''}
-function renderHome(){const w=wk();const f=document.getElementById('focusInput');f.value=w.focus||'';focusIdeaIndex=((weekStart().getDate()+weekStart().getMonth())%focusIdeas.length);document.getElementById('focusSuggestion').textContent=focusIdeas[focusIdeaIndex];
+function renderHome(){const w=wk();const f=document.getElementById('focusInput');f.value=w.focus||'';
  const pl=document.getElementById('priorityList');pl.innerHTML='';
  const linked=[];for(let i=0;i<7;i++){const d=addDays(weekStart(),i),k=ymd(d);getDaily(k).forEach((it,idx)=>{if(it.priority)linked.push({it,idx,dk:k,day:DOW[i]})})}
  const manual=(w.priorities||[]);
@@ -207,18 +209,57 @@ function renderHome(){const w=wk();const f=document.getElementById('focusInput')
  manual.forEach((p,i)=>{const r=document.createElement('div');r.className='row';r.innerHTML=`<div class="check ${p.done?'done':''}">${p.done?'✓':''}</div><input type="text" value="${esc(p.text)}"><button class="trash">×</button>`;r.querySelector('.check').onclick=()=>{p.done=!p.done;save();renderHome()};r.querySelector('input').onchange=e=>{p.text=e.target.value;save()};r.querySelector('.trash').onclick=()=>{manual.splice(i,1);save();renderHome()};pl.appendChild(r)});
  const ov=document.getElementById('weekOverview');ov.innerHTML='';for(let i=0;i<7;i++){const d=addDays(weekStart(),i),k=ymd(d),count=getDaily(k).length;const b=document.createElement('div');b.className='daybubble'+(ymd(d)===ymd(new Date())?' today':'');b.innerHTML=`<div class="dow">${DOW[i]}</div><div class="dateNum">${d.getDate()}</div><div class="count">${count?count+' item'+(count>1?'s':''):'open'}</div>`;b.onclick=()=>openDay(i);ov.appendChild(b)}}
 function renderHabits(){const g=document.getElementById('habitGrid');g.innerHTML='<div></div>'+DOW.map(x=>`<div class="hday">${x[0]}</div>`).join('')+'<div></div>'; if(!state.habits.length){const e=document.createElement('div');e.className='empty';e.style.gridColumn='1/-1';e.textContent='Add the habits you want to carry week to week.';g.appendChild(e)} state.habits.forEach((h,hi)=>{const n=document.createElement('div');n.className='hname';n.textContent=h.name;g.appendChild(n);for(let i=0;i<7;i++){const dk=ymd(addDays(weekStart(),i));const key=h.id+'|'+dk;const c=document.createElement('div');c.className='hcell'+(state.habitChecks[key]?' on':'');c.textContent=state.habitChecks[key]?'✓':'';c.onclick=()=>{state.habitChecks[key]=!state.habitChecks[key];save();renderHabits()};g.appendChild(c)}const del=document.createElement('button');del.className='trash';del.textContent='×';del.onclick=()=>{state.habits.splice(hi,1);Object.keys(state.habitChecks).forEach(k=>{if(k.startsWith(h.id+'|'))delete state.habitChecks[k]});save();renderHabits()};g.appendChild(del)})}
-function renderDays(){const c=document.getElementById('daysContainer');c.innerHTML='';for(let i=0;i<7;i++){const d=addDays(weekStart(),i),dk=ymd(d),items=getDaily(dk);const card=document.createElement('div');card.className='card dayCard';card.id='day-'+i;card.innerHTML=`<div class="dayHead"><div><div class="dayName">${d.toLocaleDateString(undefined,{weekday:'long'})}</div><div class="small">${d.toLocaleDateString(undefined,{month:'short',day:'numeric'})}</div></div></div><div class="reco"><strong>One small suggestion</strong><div>${esc(suggestionFor(dk))}</div><div class="recoActions"><button class="swap">Swap idea</button><button class="addReco">Add to my day</button></div></div><div class="taskList"></div><div class="addline"><input placeholder="Add something to ${DOW[i]}"><button>+</button></div>`;
+function renderDays(){const c=document.getElementById('daysContainer');c.innerHTML='';for(let i=0;i<7;i++){const d=addDays(weekStart(),i),dk=ymd(d),items=getDaily(dk);const card=document.createElement('div');card.className='card dayCard';card.id='day-'+i;card.innerHTML=`<div class="dayHead"><div><div class="dayName">${d.toLocaleDateString(undefined,{weekday:'long'})}</div><div class="small">${d.toLocaleDateString(undefined,{month:'short',day:'numeric'})}</div></div></div><div class="taskList"></div><div class="addline"><input placeholder="Add something to ${DOW[i]}"><button>+</button></div>`;
  const list=card.querySelector('.taskList'); if(!items.length)list.innerHTML='<div class="empty">Nothing added yet.</div>';items.forEach((it,idx)=>{if(it.priority==null)it.priority=false;const r=document.createElement('div');r.className='row';r.innerHTML=`<div class="check ${it.done?'done':''}">${it.done?'✓':''}</div><input type="text" value="${esc(it.text)}"><label class="priorityToggle"><input type="checkbox" ${it.priority?'checked':''}> Priority</label><button class="trash">×</button>`;r.querySelector('.check').onclick=()=>{it.done=!it.done;save();renderDays();renderHome()};r.querySelector('input[type=text]').onchange=e=>{it.text=e.target.value;save();renderHome()};r.querySelector('.priorityToggle input').onchange=e=>{it.priority=e.target.checked;save();renderHome()};r.querySelector('.trash').onclick=()=>{items.splice(idx,1);save();renderDays();renderHome()};list.appendChild(r)});
- card.querySelector('.swap').onclick=()=>{const w=wk();w.suggestions[dk]=(w.suggestions[dk]+1)%dailyIdeas.length;save();renderDays()};card.querySelector('.addReco').onclick=()=>{items.push({text:suggestionFor(dk),done:false,priority:false});save();renderDays();renderHome()};const ai=card.querySelector('.addline input'),ab=card.querySelector('.addline button');ab.onclick=()=>{if(ai.value.trim()){items.push({text:ai.value.trim(),done:false,priority:false});save();renderDays();renderHome()}};ai.addEventListener('keydown',e=>{if(e.key==='Enter')ab.click()});c.appendChild(card)}}
-function openDay(i){switchTab('days');setTimeout(()=>document.getElementById('day-'+i)?.scrollIntoView({behavior:'smooth',block:'start'}),60)}
+ const ai=card.querySelector('.addline input'),ab=card.querySelector('.addline button');ab.onclick=()=>{if(ai.value.trim()){items.push({text:ai.value.trim(),done:false,priority:false});save();renderDays();renderHome()}};ai.addEventListener('keydown',e=>{if(e.key==='Enter')ab.click()});c.appendChild(card)}}
+function openDay(i){document.getElementById('day-'+i)?.scrollIntoView({behavior:'smooth',block:'start'})}
 function switchTab(id){document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('.navbtn').forEach(x=>x.classList.toggle('active',x.dataset.tab===id));window.scrollTo({top:0,behavior:'smooth'})}
 function esc(s=''){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
-document.querySelectorAll('.navbtn').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
+
 document.getElementById('prevWeek').onclick=()=>{weekOffset--;renderAll()};document.getElementById('nextWeek').onclick=()=>{weekOffset++;renderAll()};
-document.getElementById('focusInput').oninput=e=>{wk().focus=e.target.value;save()};document.getElementById('newSuggestion').onclick=()=>{focusIdeaIndex=(focusIdeaIndex+1)%focusIdeas.length;document.getElementById('focusSuggestion').textContent=focusIdeas[focusIdeaIndex]};document.getElementById('useSuggestion').onclick=()=>{wk().focus=focusIdeas[focusIdeaIndex];save();renderHome()};
+document.getElementById('focusInput').oninput=e=>{wk().focus=e.target.value;save()};
 const pi=document.getElementById('priorityInput');document.getElementById('addPriority').onclick=()=>{if(pi.value.trim()){wk().priorities.push({text:pi.value.trim(),done:false});pi.value='';save();renderHome()}};pi.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('addPriority').click()});
 const hi=document.getElementById('habitInput');document.getElementById('addHabit').onclick=()=>{if(hi.value.trim()){state.habits.push({id:'h'+Date.now(),name:hi.value.trim()});hi.value='';save();renderHabits()}};hi.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('addHabit').click()});
 document.getElementById('notesArea').oninput=e=>{state.notes=e.target.value;save()};
+
+// Combined Focus + Home Reset. Existing Focus data keys remain unchanged.
+const CLEAN_SCHEDULE={
+  0:{name:'Sunday',focus:'No scheduled Home Reset chores',items:[]},
+  1:{name:'Monday',focus:'Bathrooms',items:[['Toilets','Quick clean'],['Sink + counter','Wipe and put away'],['Mirror','Only if needed'],['Shower / tub','Quick wipe if needed']]},
+  2:{name:'Tuesday',focus:'Dust',items:[['Main living areas','Visible surfaces first'],['Shelves + surfaces','Skip what looks fine'],['Bedroom surfaces','Only if you have time']]},
+  3:{name:'Wednesday',focus:'Vacuum',items:[['Whole house','Your real vacuum day'],['Attachments','Only where needed'],["Don't move furniture",'Maintenance, not spring cleaning']]},
+  4:{name:'Thursday',focus:'Mop Floors',items:[['Kitchen','Hard floors'],['Entry + hall','High traffic first'],['Bathrooms','Quick pass']]},
+  5:{name:'Friday',focus:'Catch-Up Day',items:[['Catch up on one thing','Only if something is bothering you'],['Or do nothing','You are not behind']]},
+  6:{name:'Saturday',focus:'Sheets + Towels',items:[['Change sheets','Main beds'],['Wash towels','Bath + hand towels'],['Extras','Only if needed']]}
+};
+const CLEAN_BASE=[['Kitchen reset','Dishes/dishwasher + wipe counters'],['5-minute pickup','Toys, clothes, bottles, random stuff'],['Quick floor pass','Only high-traffic / dog-hair areas'],['Laundry action','Start, switch, OR fold/put away'],['Make bed','Optional — skip hectic mornings']];
+const CLEAN_DOG=[['Kitchen / eating area','Hit visible fur'],['Living room + hallway','Quick pass only'],["Dog's favorite spot",'Blanket, bed, or floor area']];
+const CLEAN_SURVIVAL=[['Get dishes contained','Sink or dishwasher is fine'],['Wipe kitchen counter','One clear surface helps'],['Pick up obvious floor clutter','Then stop']];
+const CLEAN_EXTRAS=['Microwave + appliance fronts','Baseboards in one room','Wipe cabinet fronts','Clean one shower / tub','Vacuum couch / chairs','Windows in one room'];
+const ESSENTIAL_DEFAULT=['Wash Tucker’s bottles','Reset dishwasher','Move laundry forward (if needed)','Prepare daycare essentials'];
+const TODAY_KEY=()=>{let d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
+let combined=(()=>{try{return JSON.parse(localStorage.getItem('focusCombined_v1'))||{}}catch{return {}}})();
+if(!Array.isArray(combined.essentials)) combined.essentials=[...ESSENTIAL_DEFAULT];
+if(!combined.checks)combined.checks={};if(!combined.ideas)combined.ideas={};
+function saveCombined(){localStorage.setItem('focusCombined_v1',JSON.stringify(combined))}
+function todayCheck(section,index){return `${TODAY_KEY()}|${section}|${index}`}
+function taskBox(host,title,subtitle,key){const row=document.createElement('div');row.className='row';const cb=document.createElement('button');cb.className='check'+(combined.checks[key]?' done':'');cb.textContent=combined.checks[key]?'✓':'';cb.setAttribute('aria-label',`Mark ${title} complete`);cb.onclick=()=>{combined.checks[key]=!combined.checks[key];saveCombined();renderCombined()};let text=document.createElement('div');text.style.flex='1';let strong=document.createElement('div');strong.textContent=title;strong.style.fontWeight='650';text.appendChild(strong);if(subtitle){let note=document.createElement('div');note.className='small';note.textContent=subtitle;text.appendChild(note)}row.append(cb,text);host.appendChild(row);return row}
+function renderCombined(){
+ const essentials=document.getElementById('essentials');essentials.replaceChildren();combined.essentials.forEach((t,i)=>{let row=taskBox(essentials,t,'',todayCheck('essential',encodeURIComponent(t)));let del=document.createElement('button');del.className='trash';del.textContent='×';del.title='Remove daily essential';del.onclick=()=>{combined.essentials.splice(i,1);saveCombined();renderCombined()};row.appendChild(del)});
+ const date=TODAY_KEY();if(combined.ideas[date]==null)combined.ideas[date]=[...date].reduce((a,c)=>a+c.charCodeAt(0),0)%dailyIdeas.length;
+ document.getElementById('todaySuggestion').textContent=dailyIdeas[combined.ideas[date]];
+ const cd=CLEAN_SCHEDULE[new Date().getDay()];document.getElementById('cleanDay').textContent='· '+cd.name;document.getElementById('cleanFocus').textContent=cd.focus;
+ for(const [id,arr,group] of [['cleanItems',cd.items,'focus'],['cleanBasics',new Date().getDay()===0?[]:CLEAN_BASE,'base'],['dogTasks',new Date().getDay()===0?[]:CLEAN_DOG,'dog'],['survivalTasks',new Date().getDay()===0?[]:CLEAN_SURVIVAL,'survival']]){let host=document.getElementById(id);host.replaceChildren();arr.forEach((x,i)=>taskBox(host,x[0],x[1],todayCheck(group,i)));if(!arr.length){let msg=document.createElement('div');msg.className='hint';msg.textContent='Nothing scheduled today.';host.appendChild(msg)}}
+ const jan1=new Date(new Date().getFullYear(),0,1),week=Math.floor((new Date()-jan1)/(7*86400000));document.getElementById('extraTask').textContent=new Date().getDay()===0?'No Home Reset extras on Sunday.':CLEAN_EXTRAS[week%CLEAN_EXTRAS.length]+' (optional — 15 minutes max)';
+}
+document.getElementById('addEssential').onclick=()=>{let inp=document.getElementById('essentialInput'),v=inp.value.trim();if(!v)return;combined.essentials.push(v);inp.value='';saveCombined();renderCombined()};
+document.getElementById('essentialInput').onkeydown=e=>{if(e.key==='Enter')document.getElementById('addEssential').click()};
+document.getElementById('swapTodayIdea').onclick=()=>{let k=TODAY_KEY();combined.ideas[k]=((combined.ideas[k]||0)+1)%dailyIdeas.length;saveCombined();renderCombined()};
+// Keep existing Home Reset daily completion when migrating within the same website origin.
+try{let prev=JSON.parse(localStorage.getItem('hr_state_'+TODAY_KEY())||'{}');for(let [i,x] of CLEAN_SCHEDULE[new Date().getDay()].items.entries())if(prev['focus_'+i])combined.checks[todayCheck('focus',i)]=true}catch{}
+saveCombined();renderCombined();
+
 renderAll();
+if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js"))}
 </script>
 </body></html>

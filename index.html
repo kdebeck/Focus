@@ -73,6 +73,14 @@ body{min-height:100vh;padding-bottom:30px}.wrap{max-width:760px;margin:0 auto;pa
       <div class="addline"><input id="priorityInput" placeholder="Add a priority"><button id="addPriority">+</button></div>
     </div>
 
+    <div class="card" id="skinRoutine">
+      <div class="eyebrow">Night routine</div>
+      <h2 class="sectionTitle">Skincare tonight <span class="small" id="skinDay"></span></h2><div class="natureline"></div>
+      <div class="hint" id="skinTreatmentNote" style="margin-bottom:10px"></div>
+      <div id="skinTasks" class="taskList"></div>
+      <details style="margin-top:12px"><summary class="hint" style="cursor:pointer">Gradual introduction plan</summary><p class="hint" style="margin-top:8px">If you are still introducing the products: Weeks 1–2, use soap + moisturizer only. Weeks 3–4, add Medicube Zero Pore Pads on Wednesday, then Sunday. Weeks 5–6, add retinal on Monday. Week 7 onward, add Friday retinal. Do not use pads and retinal on the same night.</p></details>
+    </div>
+
     <div class="card">
       <h2 class="sectionTitle">Your week</h2>
       <div id="weekOverview" class="overview"></div>
@@ -244,6 +252,24 @@ if(!combined.checks)combined.checks={};if(!combined.ideas)combined.ideas={};
 function saveCombined(){localStorage.setItem('focusCombined_v1',JSON.stringify(combined))}
 function todayCheck(section,index){return `${TODAY_KEY()}|${section}|${index}`}
 function taskBox(host,title,subtitle,key){const row=document.createElement('div');row.className='row';const cb=document.createElement('button');cb.className='check'+(combined.checks[key]?' done':'');cb.textContent=combined.checks[key]?'✓':'';cb.setAttribute('aria-label',`Mark ${title} complete`);cb.onclick=()=>{combined.checks[key]=!combined.checks[key];saveCombined();renderCombined()};let text=document.createElement('div');text.style.flex='1';let strong=document.createElement('div');strong.textContent=title;strong.style.fontWeight='650';text.appendChild(strong);if(subtitle){let note=document.createElement('div');note.className='small';note.textContent=subtitle;text.appendChild(note)}row.append(cb,text);host.appendChild(row);return row}
+function renderSkinCare(){
+ const day=new Date().getDay();
+ const schedule={
+  0:{name:'Sunday',title:'Medicube Zero Pore Pads',note:'Pad night • Skip retinal tonight.'},
+  1:{name:'Monday',title:'Retinal',note:'Retinal night • Apply to fully dry skin; skip pads tonight.'},
+  2:{name:'Tuesday',title:'Recovery night',note:'No pads or retinal tonight.'},
+  3:{name:'Wednesday',title:'Medicube Zero Pore Pads',note:'Pad night • Skip retinal tonight.'},
+  4:{name:'Thursday',title:'Recovery night',note:'No pads or retinal tonight.'},
+  5:{name:'Friday',title:'Retinal',note:'Retinal night • Apply to fully dry skin; skip pads tonight.'},
+  6:{name:'Saturday',title:'Recovery night',note:'No pads or retinal tonight.'}
+ };
+ const tonight=schedule[day];
+ document.getElementById('skinDay').textContent='· '+tonight.name;
+ document.getElementById('skinTreatmentNote').textContent=tonight.note;
+ const tasks=[['Micellar water on eyes',''],['Herbal Face Food soap','Use as your cleanser'],[tonight.title,day===0||day===3?'Use only once you have introduced the pads.':(day===1||day===5?'Use only once you have introduced retinal.':'Let skin recover — no active treatment.')],['Byoma Moisturizing Rich Cream','Finish with moisturizer']];
+ const host=document.getElementById('skinTasks');host.replaceChildren();
+ tasks.forEach((x,i)=>taskBox(host,x[0],x[1],todayCheck('skincare',i)));
+}
 function renderCombined(){
  const essentials=document.getElementById('essentials');essentials.replaceChildren();combined.essentials.forEach((t,i)=>{let row=taskBox(essentials,t,'',todayCheck('essential',encodeURIComponent(t)));let del=document.createElement('button');del.className='trash';del.textContent='×';del.title='Remove daily essential';del.onclick=()=>{combined.essentials.splice(i,1);saveCombined();renderCombined()};row.appendChild(del)});
  const date=TODAY_KEY();if(combined.ideas[date]==null)combined.ideas[date]=[...date].reduce((a,c)=>a+c.charCodeAt(0),0)%dailyIdeas.length;
@@ -251,6 +277,7 @@ function renderCombined(){
  const cd=CLEAN_SCHEDULE[new Date().getDay()];document.getElementById('cleanDay').textContent='· '+cd.name;document.getElementById('cleanFocus').textContent=cd.focus;
  for(const [id,arr,group] of [['cleanItems',cd.items,'focus'],['cleanBasics',new Date().getDay()===0?[]:CLEAN_BASE,'base'],['dogTasks',new Date().getDay()===0?[]:CLEAN_DOG,'dog'],['survivalTasks',new Date().getDay()===0?[]:CLEAN_SURVIVAL,'survival']]){let host=document.getElementById(id);host.replaceChildren();arr.forEach((x,i)=>taskBox(host,x[0],x[1],todayCheck(group,i)));if(!arr.length){let msg=document.createElement('div');msg.className='hint';msg.textContent='Nothing scheduled today.';host.appendChild(msg)}}
  const jan1=new Date(new Date().getFullYear(),0,1),week=Math.floor((new Date()-jan1)/(7*86400000));document.getElementById('extraTask').textContent=new Date().getDay()===0?'No Home Reset extras on Sunday.':CLEAN_EXTRAS[week%CLEAN_EXTRAS.length]+' (optional — 15 minutes max)';
+ renderSkinCare();
 }
 document.getElementById('addEssential').onclick=()=>{let inp=document.getElementById('essentialInput'),v=inp.value.trim();if(!v)return;combined.essentials.push(v);inp.value='';saveCombined();renderCombined()};
 document.getElementById('essentialInput').onkeydown=e=>{if(e.key==='Enter')document.getElementById('addEssential').click()};

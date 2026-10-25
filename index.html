@@ -76,11 +76,7 @@ body{min-height:100vh;padding-bottom:30px}.wrap{max-width:760px;margin:0 auto;pa
       <h2 class="sectionTitle">Face Washing + Tonight’s Routine</h2>
       <div class="natureline"></div>
       <p class="hint" style="margin-top:0">Every night, keep the cleanse simple:</p>
-      <div class="taskList">
-        <div class="row"><div style="flex:1"><div style="font-weight:650">1. Micellar water</div><div class="small">Eyes only, to remove makeup</div></div></div>
-        <div class="row"><div style="flex:1"><div style="font-weight:650">2. Herbal Face Food soap</div><div class="small">Wash your face</div></div></div>
-        <div class="row"><div style="flex:1"><div style="font-weight:650">3. Byoma Rich Cream</div><div class="small">Moisturize every night</div></div></div>
-      </div>
+      <div id="skincareDailyTasks" class="taskList"></div>
       <div class="suggest" style="margin-top:14px">
         <div class="suggestTop"><div><div class="eyebrow">Weekly rotation</div><div class="suggestText">Monday + Friday · Retinal<br>Wednesday + Sunday · Medicube Zero Pore Pads<br>Tuesday + Thursday + Saturday · Recovery night</div></div></div>
         <p class="small" style="margin-bottom:0">On retinal nights, apply Naturium Retinaldehyde 0.05% to dry skin after washing and before moisturizer. On pad nights, use the Medicube pad after washing, then moisturize. Never use the pads and retinal on the same night.</p>
@@ -259,7 +255,19 @@ if(!combined.checks)combined.checks={};if(!combined.ideas)combined.ideas={};
 function saveCombined(){localStorage.setItem('focusCombined_v1',JSON.stringify(combined))}
 function todayCheck(section,index){return `${TODAY_KEY()}|${section}|${index}`}
 function taskBox(host,title,subtitle,key){const row=document.createElement('div');row.className='row';const cb=document.createElement('button');cb.className='check'+(combined.checks[key]?' done':'');cb.textContent=combined.checks[key]?'✓':'';cb.setAttribute('aria-label',`Mark ${title} complete`);cb.onclick=()=>{combined.checks[key]=!combined.checks[key];saveCombined();renderCombined()};let text=document.createElement('div');text.style.flex='1';let strong=document.createElement('div');strong.textContent=title;strong.style.fontWeight='650';text.appendChild(strong);if(subtitle){let note=document.createElement('div');note.className='small';note.textContent=subtitle;text.appendChild(note)}row.append(cb,text);host.appendChild(row);return row}
+function renderSkincareTasks(){
+ const host=document.getElementById('skincareDailyTasks');if(!host)return;host.replaceChildren();
+ const basics=[['Micellar water','Eyes only, to remove makeup'],['Herbal Face Food soap','Wash your face'],['Byoma Rich Cream','Moisturize every night']];
+ basics.forEach((x,i)=>taskBox(host,x[0],x[1],todayCheck('skincare',i)));
+ const dow=new Date().getDay();
+ let treatment;
+ if(dow===1||dow===5)treatment=['Naturium Retinaldehyde 0.05%','Retinal night — apply to dry skin after washing, before moisturizer. Skip if you are still in the gradual introduction phase.'];
+ else if(dow===0||dow===3)treatment=['Medicube Zero Pore Pad','Pad night — use after washing, then moisturize. Skip if you are still in the gradual introduction phase.'];
+ else treatment=['Recovery night','No active treatment scheduled tonight; cleanse and moisturize only.'];
+ taskBox(host,treatment[0],treatment[1],todayCheck('skincare',3));
+}
 function renderCombined(){
+ renderSkincareTasks();
  const essentials=document.getElementById('essentials');essentials.replaceChildren();combined.essentials.forEach((t,i)=>{let row=taskBox(essentials,t,'',todayCheck('essential',encodeURIComponent(t)));let del=document.createElement('button');del.className='trash';del.textContent='×';del.title='Remove daily essential';del.onclick=()=>{combined.essentials.splice(i,1);saveCombined();renderCombined()};row.appendChild(del)});
  const date=TODAY_KEY();if(combined.ideas[date]==null)combined.ideas[date]=[...date].reduce((a,c)=>a+c.charCodeAt(0),0)%dailyIdeas.length;
  document.getElementById('todaySuggestion').textContent=dailyIdeas[combined.ideas[date]];
